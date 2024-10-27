@@ -25,9 +25,11 @@ try {
         $descricao = $_POST['descricao'];
         $status = $_POST['status'];
         $currentFoto = $_POST['currentFoto'];  // Campo oculto com a foto atual
+        $latitude = $_POST['latitude'];
+        $longitude = $_POST['longitude'];
 
         // Verifica se todos os campos obrigatórios foram preenchidos
-        if ($endereco && $cidade && $categoria && $preco && $nome_vendedor && $telefone_vendedor && $email_vendedor && $descricao && $status) {
+        if ($endereco && $cidade && $categoria && $preco && $nome_vendedor && $telefone_vendedor && $email_vendedor && $descricao && $latitude && $longitude && $status) {
             
             $targetFile = $currentFoto; // Manter a foto atual por padrão
 
@@ -60,7 +62,7 @@ try {
             }
 
             // Atualizar os dados no banco de dados
-            $query = "UPDATE imoveis SET endereco = ?, cidade = ?, categoria = ?, preco = ?, nome_vendedor = ?, telefone_vendedor = ?, email_vendedor = ?, descricao = ?, status = ?, foto = ? WHERE id = ?";
+            $query = "UPDATE imoveis SET endereco = ?, cidade = ?, categoria = ?, preco = ?, nome_vendedor = ?, telefone_vendedor = ?, email_vendedor = ?, descricao = ?, status = ?, foto = ?, latitude = ?, longitude = ? WHERE id = ?";
             $preparedStatement = $conn->prepare($query);
 
             $preparedStatement->bindParam(1, $endereco, PDO::PARAM_STR);
@@ -73,7 +75,9 @@ try {
             $preparedStatement->bindParam(8, $descricao, PDO::PARAM_STR);
             $preparedStatement->bindParam(9, $status, PDO::PARAM_STR);
             $preparedStatement->bindParam(10, $targetFile, PDO::PARAM_STR);
-            $preparedStatement->bindParam(11, $recordId, PDO::PARAM_INT);
+            $preparedStatement->bindParam(11, $latitude, PDO::PARAM_STR);
+            $preparedStatement->bindParam(12, $longitude, PDO::PARAM_STR);
+            $preparedStatement->bindParam(13, $recordId, PDO::PARAM_INT);
 
             $preparedStatement->execute();
 

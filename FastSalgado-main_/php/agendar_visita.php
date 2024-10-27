@@ -10,6 +10,7 @@ if (!isset($_SESSION["nomeUsuario"])) {
 $nomeUsuario = $_SESSION["nomeUsuario"];
 $usuarioId = $_SESSION["idUsuario"];
 $isAdmin = isset($_SESSION["isAdmin"]) && $_SESSION["isAdmin"] == 1;
+$isCorretor = isset($_SESSION["isCorretor"]) && $_SESSION["isCorretor"] == 1;
 
 // Configurações de Paginação
 $total_reg = 5;
@@ -75,9 +76,12 @@ try {
                         <a class="nav-link" href="pesquisar.php">Pesquisar</a>
                     </li>
                     <?php if ($isAdmin) { ?>
-                    <li class="nav-item">
-                        <a class="nav-link" href="gerenciar_usuarios.php">Usuários</a>
-                    </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="gerenciar_usuarios.php">Usuários</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="admin_solicitacoes.php">Solicitações</a>
+                        </li>
                     <?php } ?>
                     <li class="nav-item">
                         <a class="nav-link" href="favoritos.php">Favoritos</a>
@@ -173,7 +177,7 @@ try {
                                 <a href="#" class="icon-button" data-bs-toggle="modal" data-bs-target="#viewModal-<?= $row['visita_id'] ?>">
                                     <i class="fas fa-eye"></i>
                                 </a>
-                                <?php if ($isAdmin) { ?>
+                                <?php if ($isAdmin || $isCorretor) { ?>
                                     <!-- Botão de Edição (Modal) -->
                                     <a href="#" class="icon-button edit-icon" data-bs-toggle="modal" data-bs-target="#editModal-<?= $row['visita_id'] ?>">
                                         <i class="fas fa-edit"></i>
