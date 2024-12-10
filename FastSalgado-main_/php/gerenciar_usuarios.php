@@ -90,15 +90,24 @@ $stmt->execute();
                         <a class="nav-link" href="pesquisar.php">Pesquisar</a>
                     </li>
                     <?php if ($isAdmin) { ?>
-                    <li class="nav-item">
-                        <a class="nav-link" href="gerenciar_usuarios.php">Usuários</a>
-                    </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="gerenciar_usuarios.php">Usuários</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="admin_solicitacoes.php">Solicitações</a>
+                        </li>
                     <?php } ?>
                     <li class="nav-item">
                         <a class="nav-link" href="favoritos.php">Favoritos</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="agendar_visita.php">Visitas</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="perfil.php">Perfil</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="gerar_pdf.php">Contrato</a>
                     </li>
                 </ul>
                 <div class="d-flex align-items-center">
@@ -134,7 +143,6 @@ $stmt->execute();
                             <td>
                                 <!-- Botões para abrir modais -->
                                 <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#modalDetalhes<?= $row['id'] ?>">Detalhes</button>
-                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalEditar<?= $row['id'] ?>">Editar</button>
                                 <a href="?action=delete&id=<?= $row['id'] ?>" class="btn btn-danger" onclick="return confirm('Tem certeza que deseja excluir este usuário?');">Excluir</a>
                             </td>
                         </tr>
@@ -159,35 +167,7 @@ $stmt->execute();
                             </div>
                         </div>
 
-                        <!-- Modal de Edição -->
-                        <div class="modal fade" id="modalEditar<?= $row['id'] ?>" tabindex="-1" aria-labelledby="modalEditarLabel<?= $row['id'] ?>" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="modalEditarLabel<?= $row['id'] ?>">Editar Usuário</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <!-- Formulário de Edição -->
-                                        <form method="post" action="editRecord.php" enctype="multipart/form-data">
-                                            <input type="hidden" name="id" value="<?= $row['id'] ?>">
-                                            <div class="mb-3">
-                                                <label for="nome" class="form-label">Nome:</label>
-                                                <input type="text" class="form-control" id="nome" name="nome" value="<?= $row['nome'] ?>" required>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="email" class="form-label">Email:</label>
-                                                <input type="email" class="form-control" id="email" name="email" value="<?= $row['email'] ?>" required>
-                                            </div>
-                                            <button type="submit" class="btn btn-primary">Salvar Alterações</button>
-                                        </form>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        
                     <?php } ?>
                 </tbody>
             </table>

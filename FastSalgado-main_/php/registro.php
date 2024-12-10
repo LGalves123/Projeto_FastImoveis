@@ -1,15 +1,41 @@
+<?php
+session_start();
+
+// Função para gerar o CSRF token
+function gerarCsrfToken() {
+    if (!isset($_SESSION['csrf_token'])) {
+        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+    }
+    return $_SESSION['csrf_token'];
+}
+?>
 <!DOCTYPE html>
 <html>
 <head>
     <title>Registro</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-    <style>
-        .vh-100 {
-            height: 100vh;
-        }
-    </style>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 </head>
 <body style="background-color: #508bfc;">
+<header>
+        <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="../arquivos/index.php">FastImóveis</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarCollapse">
+                <ul class="navbar-nav me-auto mb-2 mb-md-0">
+                        <li class="nav-item">
+                            <a class="nav-link" href="login.php">Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Registro</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
     <section class="vh-100">
         <div class="container py-5 h-100">
             <div class="row d-flex justify-content-center align-items-center h-100">
@@ -19,24 +45,34 @@
 
                             <h3 class="mb-5">Registrar</h3>
                             <form action="registro_processar.php" method="post">
+                                <input type="hidden" name="csrf_token" value="<?php echo gerarCsrfToken(); ?>">
 
                                 <div class="form-outline mb-4">
-                                    <input type="text" id="name" placeholder="Nome" name="nome" class="form-control form-control-lg" />
-
+                                    <input type="text" id="name" placeholder="Nome" name="nome" class="form-control form-control-lg" required />
                                 </div>
 
                                 <div class="form-outline mb-4">
-                                    <input type="email" id="typeEmailX-2" placeholder="Email" name="email" class="form-control form-control-lg" />
-
+                                    <input type="email" id="typeEmailX-2" placeholder="Email" name="email" class="form-control form-control-lg" required />
                                 </div>
 
                                 <div class="form-outline mb-4">
-                                    <input type="password" placeholder="Senha:" id="typePasswordX-2"  name="senha" class="form-control form-control-lg" />
+                                    <input type="password" placeholder="Senha" id="typePasswordX-2" name="senha" class="form-control form-control-lg" required />
+                                </div>
 
+                                <!-- Campo opcional para número CRECI -->
+                                <div class="form-outline mb-4">
+                                    <input type="text" placeholder="Número CRECI (opcional)" name="creci" class="form-control form-control-lg" />
+                                </div>
+
+                                <!-- Checkbox para identificar se o usuário é corretor -->
+                                <div class="form-check mb-4">
+                                    <input class="form-check-input" type="checkbox" id="isCorretor" name="isCorretor" value="1">
+                                    <label class="form-check-label" for="isCorretor">
+                                        Sou Corretor
+                                    </label>
                                 </div>
 
                                 <button class="btn btn-primary btn-lg btn-block" type="submit">Registrar</button>
-
                             </form>
 
                         </div>
@@ -45,6 +81,11 @@
             </div>
         </div>
     </section>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
 </body>
 </html>

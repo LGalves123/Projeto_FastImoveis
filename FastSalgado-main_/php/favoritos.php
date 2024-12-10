@@ -62,15 +62,24 @@ try {
                         <a class="nav-link" href="pesquisar.php">Pesquisar</a>
                     </li>
                     <?php if ($isAdmin) { ?>
-                    <li class="nav-item">
-                        <a class="nav-link" href="gerenciar_usuarios.php">Usuários</a>
-                    </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="gerenciar_usuarios.php">Usuários</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="admin_solicitacoes.php">Solicitações</a>
+                        </li>
                     <?php } ?>
                     <li class="nav-item">
                         <a class="nav-link" href="favoritos.php">Favoritos</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="agendar_visita.php">Visitas</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="perfil.php">Perfil</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="gerar_pdf.php">Contrato</a>
                     </li>
                 </ul>
                 <div class="d-flex align-items-center">

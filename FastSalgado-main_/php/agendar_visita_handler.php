@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $stmt->bindParam(':visitaId', $visitaId);
             $stmt->execute();
 
-            echo "Visita editada com sucesso!";
+            header("Location: painel.php");
         } else {
             // Criação
             $stmt = $conn->prepare("INSERT INTO visitas (id_imovel, id_corretor, data_visita, status) VALUES (:id_imovel, :id_corretor, :data_visita, :status)");
@@ -31,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $stmt->bindParam(':status', $status);
             $stmt->execute();
 
-            echo "Visita agendada com sucesso!";
+            header("Location: painel.php");
         }
     } catch (PDOException $e) {
         echo "Erro ao agendar visita: " . $e->getMessage();

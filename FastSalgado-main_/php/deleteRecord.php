@@ -1,33 +1,30 @@
 <?php
 session_start();
-try {
-    $conn = new PDO("mysql:host=localhost;dbname=FastImoveis;charset=utf8mb4", "root", "");
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    try {
+        $conn = new PDO("mysql:host=localhost;dbname=fastimoveis;charset=utf8", "root", "");
+        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    // Check if the request contains a record ID
-    $recordIdStr = $_POST["recordId"] ?? null;
-    if ($recordIdStr !== null) {
-        $recordId = intval($recordIdStr);
+        // Recebe o ID da visita
+        if (isset($_POST['visitaId']) && is_numeric($_POST['visitaId'])) {
+            $visitaId = (int)$_POST['visitaId'];
 
-        // Perform the record deletion
-        $deleteQuery = "DELETE FROM imoveis WHERE id=?";
-        $preparedStatement = $conn->prepare($deleteQuery);
-        $preparedStatement->bindParam(1, $recordId, PDO::PARAM_INT);
-        $preparedStatement->execute();
+            // Query para deletar a visita
+            $stmt = $conn->prepare("DELETE FROM visitas WHERE id = :id");
+            $stmt->bindParam(':id', $visitaId, PDO::PARAM_INT);
 
-        $rowsDeleted = $preparedStatement->rowCount();
-
-        // Send a response back to the JavaScript
-        if ($rowsDeleted > 0) {
-            echo json_encode(["success" => true, "message" => "Record deleted successfully!"]);
+            if ($stmt->execute()) {
+                echo json_encode(['success' => true, 'message' => 'Visita excluída com sucesso.']);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Erro ao excluir a visita.']);
+            }
         } else {
-            echo json_encode(["success" => false, "message" => "Failed to delete the record."]);
+            echo json_encode(['success' => false, 'message' => 'ID inválido.']);
         }
-    } else {
-        echo json_encode(["success" => false, "message" => "Invalid record ID."]);
+    } catch (PDOException $e) {
+        echo json_encode(['success' => false, 'message' => 'Erro: ' . $e->getMessage()]);
     }
-
-    $conn = null;
-} catch (PDOException $e) {
-    echo json_encode(["success" => false, "message" => "Error: " . $e->getMessage()]);
+} else {
+    echo json_encode(['success' => false, 'message' => 'Método inválido.']);
 }
 ?>

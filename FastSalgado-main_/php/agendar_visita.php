@@ -10,6 +10,7 @@ if (!isset($_SESSION["nomeUsuario"])) {
 $nomeUsuario = $_SESSION["nomeUsuario"];
 $usuarioId = $_SESSION["idUsuario"];
 $isAdmin = isset($_SESSION["isAdmin"]) && $_SESSION["isAdmin"] == 1;
+$isCorretor = isset($_SESSION["isCorretor"]) && $_SESSION["isCorretor"] == 1;
 
 // Configurações de Paginação
 $total_reg = 5;
@@ -75,15 +76,24 @@ try {
                         <a class="nav-link" href="pesquisar.php">Pesquisar</a>
                     </li>
                     <?php if ($isAdmin) { ?>
-                    <li class="nav-item">
-                        <a class="nav-link" href="gerenciar_usuarios.php">Usuários</a>
-                    </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="gerenciar_usuarios.php">Usuários</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="admin_solicitacoes.php">Solicitações</a>
+                        </li>
                     <?php } ?>
                     <li class="nav-item">
                         <a class="nav-link" href="favoritos.php">Favoritos</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="agendar_visita.php">Visitas</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="perfil.php">Perfil</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="gerar_pdf.php">Contrato</a>
                     </li>
                 </ul>
                 <div class="d-flex align-items-center">
@@ -131,18 +141,6 @@ try {
 
         <hr>
 
-        <?php if ($isAdmin) { ?>
-        <!-- Formulário de Cadastro de Corretores -->
-        <h2 class="mt-5">Cadastrar Corretor</h2>
-        <form id="cadastroCorretorForm" action="cadastrar_corretor_handler.php" method="post">
-            <div class="mb-3">
-                <label for="nome_corretor" class="form-label">Nome do Corretor:</label>
-                <input type="text" class="form-control" name="nome_corretor" id="nome_corretor" required>
-            </div>
-            <button type="submit" class="btn btn-secondary">Cadastrar Corretor</button>
-        </form>
-        <?php } ?>
-
         <hr>
 
         <!-- Listagem de Visitas Agendadas -->
@@ -170,19 +168,19 @@ try {
                             <td><?= $row['status'] ?></td>
                             <td>
                                 <!-- Botão de Visualização (Modal) -->
-                                <a href="#" class="icon-button" data-bs-toggle="modal" data-bs-target="#viewModal-<?= $row['visita_id'] ?>">
-                                    <i class="fas fa-eye"></i>
-                                </a>
-                                <?php if ($isAdmin) { ?>
-                                    <!-- Botão de Edição (Modal) -->
-                                    <a href="#" class="icon-button edit-icon" data-bs-toggle="modal" data-bs-target="#editModal-<?= $row['visita_id'] ?>">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
-                                    <!-- Botão de Exclusão -->
-                                    <button class="icon-button delete-icon" onclick="deleteVisit(<?= $row['visita_id'] ?>)">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                <?php } ?>
+            <a href="#" class="icon-button" data-bs-toggle="modal" data-bs-target="#viewModal-<?= $row['visita_id'] ?>">
+                <i class="fas fa-eye"></i>
+            </a>
+                            <?php if ($isAdmin || ($row['id_corretor'] == $usuarioId && $isCorretor)) { ?>
+            <a href="#" class="icon-button edit-icon" data-bs-toggle="modal" data-bs-target="#editModal-<?= $row['visita_id'] ?>">
+                <i class="fas fa-edit"></i>
+            </a>
+            <button class="icon-button delete-icon" onclick="deleteVisit(<?= $row['visita_id'] ?>)">
+                <i class="fas fa-trash"></i>
+            </button>
+        <?php } else { ?>
+            
+                        <?php } ?>
                             </td>
                         </tr>
                         <!-- Modal de Visualização -->
@@ -283,27 +281,29 @@ try {
     <!-- Scripts JavaScript -->
     <script>
         // Função para excluir visita
-        function deleteVisit(visitId) {
-            if (confirm("Tem certeza de que deseja excluir esta visita?")) {
-                fetch('delete_visita.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: 'visitaId=' + encodeURIComponent(visitId)
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert("Visita excluída com sucesso!");
-                        location.reload();
-                    } else {
-                        alert("Erro ao excluir visita: " + data.message);
-                    }
-                })
-                .catch(error => console.error('Error:', error));
+        // Função para excluir visita
+function deleteVisit(visitId) {
+    if (confirm("Tem certeza de que deseja excluir esta visita?")) {
+        fetch('delete_visita.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: 'visitaId=' + encodeURIComponent(visitId)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert(data.message);
+                location.reload(); // Atualiza a página para refletir a exclusão
+            } else {
+                alert("Erro ao excluir visita: " + data.message);
             }
-        }
+        })
+        .catch(error => console.error('Erro:', error));
+    }
+}
+
 
         // Função para desabilitar fins de semana e horários fora de 08:00 às 19:00
         document.querySelector('input[type="datetime-local"]').addEventListener('input', function(event) {

@@ -19,6 +19,7 @@ $_SESSION['last_activity'] = time();
 $nomeUsuario = $_SESSION["nomeUsuario"];
 $usuarioId = $_SESSION["idUsuario"];
 $isAdmin = isset($_SESSION["isAdmin"]) && $_SESSION["isAdmin"] == 1;
+$isCorretor = isset($_SESSION["isCorretor"]) && $_SESSION["isCorretor"] == 1;
 
 // Conexão ao Banco de Dados
 try {
@@ -42,7 +43,9 @@ if(isset($_POST['pesquisa'])) {
                 telefone_vendedor LIKE :termo OR 
                 email_vendedor LIKE :termo OR 
                 status LIKE :termo OR 
-                descricao LIKE :termo";
+                descricao LIKE :termo OR
+                latitude LIKE :termo OR 
+                longitude LIKE :termo";
 
     // Preparar a declaração SQL
     $stmt = $conn->prepare($query);
@@ -97,15 +100,24 @@ if(isset($_POST['pesquisa'])) {
                         <a class="nav-link" href="pesquisar.php">Pesquisar</a>
                     </li>
                     <?php if ($isAdmin) { ?>
-                    <li class="nav-item">
-                        <a class="nav-link" href="gerenciar_usuarios.php">Usuários</a>
-                    </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="gerenciar_usuarios.php">Usuários</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="admin_solicitacoes.php">Solicitações</a>
+                        </li>
                     <?php } ?>
                     <li class="nav-item">
                         <a class="nav-link" href="favoritos.php">Favoritos</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="agendar_visita.php">Visitas</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="perfil.php">Perfil</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="gerar_pdf.php">Contrato</a>
                     </li>
                 </ul>
                 <div class="d-flex align-items-center">
@@ -146,6 +158,8 @@ if(isset($_POST['pesquisa'])) {
                         <th>Status</th>
                         <th>Foto</th>
                         <th>Descrição</th>
+                        <th>Latitude</th>
+                        <th>Longitude</th>
                         <th>Ações</th>
                     </tr>
                 </thead>
@@ -163,6 +177,8 @@ if(isset($_POST['pesquisa'])) {
                             <td><?= $row['status'] ?></td>
                             <td><img src="<?= $row['foto'] ?>" alt="<?= $row['foto'] ?>" width="100"></td>
                             <td><?= $row['descricao'] ?></td>
+                            <td><?= $row['latitude'] ?></td>
+                            <td><?= $row['longitude'] ?></td>
                             <td>
                                 <!-- Botão Visualizar -->
                                 <a href="#" class="icon-button view-icon" data-bs-toggle="modal" data-bs-target="#viewModal-<?= $row['id'] ?>">
@@ -190,6 +206,8 @@ if(isset($_POST['pesquisa'])) {
                                         <p><strong>Status:</strong> <?= $row['status'] ?></p>
                                         <p><strong>Foto:</strong> <img src="<?= $row['foto'] ?>" alt="<?= $row['foto'] ?>" width="100"></p>
                                         <p><strong>Descrição:</strong> <?= $row['descricao'] ?></p>
+                                        <p><strong>Latitude do Imóvel:</strong> <?= $row['latitude'] ?></p>
+                                        <p><strong>Longitude do Imóvel:</strong> <?= $row['longitude'] ?></p>
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
